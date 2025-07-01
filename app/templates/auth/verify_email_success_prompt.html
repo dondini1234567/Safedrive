@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Email Verified Successfully{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3>Email Verified Successfully</h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h4>Your email has been successfully verified!</h4>
+                    <p class="lead">Thank you for verifying your email address. Your account is now fully activated.</p>
+                    
+                    <div class="alert alert-info mt-4">
+                        <h5>What would you like to do next?</h5>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center mt-4">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg mr-3">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Log In to Your Account
+                        </a>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-home mr-2"></i> Go to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

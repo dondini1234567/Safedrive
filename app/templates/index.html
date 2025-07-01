@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="auth-sidebar">
+    <div class="auth-sidebar-content">
+        <h2>Quantum-Resistant File Encryption</h2>
+        <p>SafeDrive uses advanced NTRU encryption to protect your files from both classical and quantum computing threats.</p>
+        <a href="{{ url_for('main.encryption_details') }}" class="btn btn-secondary">Learn About Our Encryption</a>
+    </div>
+    <div class="encryption-visual">
+        <div class="encryption-grid">
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+        </div>
+    </div>
+</div>
+<div class="auth-form-container">
+    <div class="auth-form-wrapper">
+        <div class="auth-form-header">
+            <h2>Welcome to SafeDrive</h2>
+            <p>Secure cloud storage with quantum-resistant encryption</p>
+        </div>
+        <div class="auth-form-actions">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-full">Login</a>
+            <div class="auth-separator">
+                <span>or</span>
+            </div>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary btn-full">Create Account</a>
+        </div>
+        <div class="auth-features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <img src="{{ url_for('static', filename='assets/lock-icon.png') }}" alt="Lock Icon">
+                </div>
+                <div class="feature-text">
+                    <h3>End-to-End Encryption</h3>
+                    <p>Your files are encrypted before they leave your device</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <img src="{{ url_for('static', filename='assets/shield-icon.png') }}" alt="Shield Icon">
+                </div>
+                <div class="feature-text">
+                    <h3>Quantum-Resistant</h3>
+                    <p>Protected against future quantum computing threats</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <img src="{{ url_for('static', filename='assets/file-icon.png') }}" alt="File Icon">
+                </div>
+                <div class="feature-text">
+                    <h3>Secure File Sharing</h3>
+                    <p>Share encrypted files with selected users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

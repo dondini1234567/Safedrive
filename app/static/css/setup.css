@@ -1,0 +1,50 @@
+.setup-steps {
+  counter-reset: step-counter;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.setup-steps li {
+  position: relative;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-left: 3px solid #007bff;
+  background-color: #f8f9fa;
+  list-style-type: none;
+  counter-increment: step-counter;
+}
+
+.setup-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: -20px;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+.setup-steps h5 {
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+
+.setup-steps code {
+  background-color: #e9ecef;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.alert-info {
+  background-color: #cce5ff;
+  border-color: #b8daff;
+}

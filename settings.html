@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | QuantumVault</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="QuantumVault Logo">
+                    <h1>QuantumVault</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔒</span>
+                            <span>Encrypted Files</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">📤</span>
+                            <span>Upload</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔄</span>
+                            <span>Activity</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="settings.html">
+                            <span class="nav-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile">
+                    <div class="avatar">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <h4>Alex Johnson</h4>
+                        <p>alex@example.com</p>
+                    </div>
+                </a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="app-header">
+                <div class="page-title">
+                    <h1>Settings</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="notification-btn">🔔</button>
+                    <a href="profile.html" class="profile-link">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </a>
+                </div>
+            </header>
+            <div class="settings-content">
+                <div class="settings-sidebar">
+                    <ul class="settings-nav">
+                        <li class="active"><a href="#account">Account Settings</a></li>
+                        <li><a href="#security">Security</a></li>
+                        <li><a href="#notifications">Notifications</a></li>
+                        <li><a href="#encryption">Encryption Preferences</a></li>
+                        <li><a href="#advanced">Advanced</a></li>
+                    </ul>
+                </div>
+                <div class="settings-main">
+                    <section id="account" class="settings-section">
+                        <div class="section-header">
+                            <h2>Account Settings</h2>
+                            <p>Manage your account information</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" value="Alex Johnson">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="alex@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="utc-8">Pacific Time (UTC-8)</option>
+                                    <option value="utc-5">Eastern Time (UTC-5)</option>
+                                    <option value="utc+0">UTC</option>
+                                    <option value="utc+1">Central European Time (UTC+1)</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="security" class="settings-section">
+                        <div class="section-header">
+                            <h2>Security</h2>
+                            <p>Manage your security settings</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Change Password</label>
+                                <div class="password-change-form">
+                                    <div class="input-group">
+                                        <label for="current-password">Current Password</label>
+                                        <input type="password" id="current-password">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="new-password">New Password</label>
+                                        <input type="password" id="new-password">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="confirm-new-password">Confirm New Password</label>
+                                        <input type="password" id="confirm-new-password">
+                                    </div>
+                                    <div class="password-warning">
+                                        <div class="warning-icon">⚠️</div>
+                                        <p>Important: This only changes your account login password. Your private encryption passwords are separate and will not be affected. You'll still need your original encryption passwords to decrypt previously encrypted files.</p>
+                                    </div>
+                                    <button class="btn btn-primary">Update Password</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Two-Factor Authentication</label>
+                                <div class="toggle-container">
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span>Enable 2FA for additional security</span>
+                                </div>
+                                <button class="btn btn-secondary">Set Up 2FA</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Session Management</label>
+                                <div class="session-list">
+                                    <div class="session-item">
+                                        <div class="session-info">
+                                            <h4>Current Session</h4>
+                                            <p>Chrome on Windows • IP: 192.168.1.1</p>
+                                            <p>Started: May 15, 2025</p>
+                                        </div>
+                                        <div class="session-actions">
+                                            <span class="active-badge">Active</span>
+                                        </div>
+                                    </div>
+                                    <div class="session-item">
+                                        <div class="session-info">
+                                            <h4>Mobile Session</h4>
+                                            <p>Safari on iOS • IP: 192.168.1.2</p>
+                                            <p>Started: May 14, 2025</p>
+                                        </div>
+                                        <div class="session-actions">
+                                            <button class="btn btn-danger btn-sm">Revoke</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger">Logout of All Sessions</button>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="encryption" class="settings-section">
+                        <div class="section-header">
+                            <h2>Encryption Preferences</h2>
+                            <p>Manage your encryption settings</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Private Encryption Passwords</label>
+                                <div class="encryption-info">
+                                    <div class="info-icon">ℹ️</div>
+                                    <p>Your private encryption passwords are never stored on our servers. Each file is encrypted with the password you provide at encryption time. You must remember these passwords to decrypt your files.</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Password Manager</label>
+                                <div class="encryption-warning">
+                                    <div class="warning-icon">⚠️</div>
+                                    <p>We strongly recommend using a secure password manager to store your encryption passwords. If you forget a private encryption password, we cannot recover your data.</p>
+                                </div>
+                                <button class="btn btn-secondary">Export Password Hints</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

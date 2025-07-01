@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Connect to Google Drive{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>Connect to Google Drive</h3>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='assets/google-drive-logo.png') }}" alt="Google Drive Logo" class="mb-4" style="max-width: 150px;">
+                    
+                    <h4>You are about to connect SafeDrive to your Google Drive account</h4>
+                    <p class="lead">This will allow SafeDrive to:</p>
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item">Upload encrypted files to your Google Drive</li>
+                        <li class="list-group-item">Download your encrypted files from Google Drive</li>
+                        <li class="list-group-item">Manage files in the SafeDrive folder</li>
+                    </ul>
+                    
+                    <p>SafeDrive will only access files it creates in your Google Drive.</p>
+                    
+                    <form action="{{ redirect_uri }}?state={{ state }}" method="get">
+                        <input type="hidden" name="state" value="{{ state }}">
+                        <button type="submit" class="btn btn-success btn-lg">Authorize Access</button>
+                    </form>
+                    
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary mt-3">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

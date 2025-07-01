@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/download.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="download-container">
+    <div class="download-header">
+        <h2>Decrypt and Download File</h2>
+        <p>Enter your encryption password to decrypt this file</p>
+    </div>
+    
+    <div class="file-info">
+        <div class="file-icon">
+            {% if 'image' in file.mime_type %}🖼️
+            {% elif 'pdf' in file.mime_type %}📑
+            {% elif 'word' in file.mime_type or 'document' in file.mime_type %}📝
+            {% elif 'excel' in file.mime_type or 'sheet' in file.mime_type %}📊
+            {% elif 'presentation' in file.mime_type or 'powerpoint' in file.mime_type %}📽️
+            {% elif 'zip' in file.mime_type or 'compressed' in file.mime_type %}🗜️
+            {% elif 'audio' in file.mime_type %}🎵
+            {% elif 'video' in file.mime_type %}🎬
+            {% else %}📄{% endif %}
+        </div>
+        <div class="file-details">
+            <h3>{{ file.original_filename }}</h3>
+            <div class="file-meta">
+                <p class="file-size">{{ (file.size / 1024)|round(1) }} KB</p>
+                <p class="file-date">Uploaded on {{ file.created_at.strftime('%b %d, %Y') }}</p>
+            </div>
+            {% if file.encryption_hint %}
+            <div class="file-hint">
+                <span class="hint-icon">💡</span>
+                <p>Password hint: {{ file.encryption_hint }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <form class="decrypt-form" method="POST" id="decryptForm">
+        <div class="form-group">
+            <label for="decryption_password">Decryption Password</label>
+            <div class="password-input-wrapper">
+                <input type="password" id="decryption_password" name="decryption_password" required>
+                <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+            </div>
+            <div class="password-note">
+                <span class="note-icon">ℹ️</span>
+                <p>Enter the password you used to encrypt this file. This is NOT your login password.</p>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Decrypt & Download</button>
+            <a href="{{ url_for('main.files') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Loading Overlay for Decryption -->
+<div class="loading-overlay" id="decryptionLoading">
+    <div class="decryption-animation">
+        <div class="file"></div>
+        <div class="key"></div>
+    </div>
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Decrypting and downloading your file...</div>
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="decryptionProgress"></div>
+    </div>
+    <div class="loading-details" id="decryptionDetails">Retrieving file from Google Drive...</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const decryptForm = document.getElementById('decryptForm');
+    const passwordInput = document.getElementById('decryption_password');
+    const togglePassword = document.getElementById('togglePassword');
+    const loadingOverlay = document.getElementById('decryptionLoading');
+    const progressBar = document.getElementById('decryptionProgress');
+    const loadingDetails = document.getElementById('decryptionDetails');
+    
+    // Password visibility toggle
+    togglePassword.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            togglePassword.textContent = '🔒';
+        } else {
+            passwordInput.type = 'password';
+            togglePassword.textContent = '👁️';
+        }
+    });
+    
+    // Form submission with loading animation
+    decryptForm.addEventListener('submit', (e) => {
+        // Show loading overlay
+        loadingOverlay.classList.add('active');
+        
+        // Simulate progress for better UX
+        simulateProgress();
+        
+        // Set a timeout to hide the loading overlay after a reasonable time
+        // This handles the case where the file downloads successfully
+        setTimeout(() => {
+            hideLoadingOverlay();
+        }, 10000); // 10 seconds should be enough for most downloads
+        
+        // Let the form submit normally
+        return true;
+    });
+    
+    function hideLoadingOverlay() {
+        // First fade out
+        loadingOverlay.style.opacity = '0';
+        
+        // Then remove the active class after transition
+        setTimeout(() => {
+            loadingOverlay.classList.remove('active');
+            loadingOverlay.style.opacity = '1';
+            progressBar.style.width = '0%';
+        }, 500);
+    }
+    
+    function simulateProgress() {
+        let progress = 0;
+        const steps = [
+            { progress: 10, message: "Retrieving encrypted file from Google Drive..." },
+            { progress: 30, message: "Verifying file integrity..." },
+            { progress: 50, message: "Decrypting file contents..." },
+            { progress: 70, message: "Validating decrypted data..." },
+            { progress: 90, message: "Preparing file for download..." },
+            { progress: 100, message: "Download complete! You can return to your files." }
+        ];
+        
+        let currentStep = 0;
+        let interval;
+        
+        interval = setInterval(() => {
+            if (currentStep < steps.length) {
+                progress = steps[currentStep].progress;
+                loadingDetails.textContent = steps[currentStep].message;
+                progressBar.style.width = progress + '%';
+                currentStep++;
+                
+                // If we've reached 100%, clear the interval and hide after a delay
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideLoadingOverlay();
+                    }, 2000);
+                }
+            }
+        }, 800);
+        
+        // Clear interval after 15 seconds as a fallback
+        setTimeout(() => {
+            clearInterval(interval);
+        }, 15000);
+    }
+});
+</script>
+{% endblock %}

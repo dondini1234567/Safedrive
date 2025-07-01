@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="files-container">
+    <div class="files-header">
+        <div class="header-left">
+            <h2>My Encrypted Files</h2>
+            <p>Manage your encrypted files</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('main.upload') }}" class="btn btn-primary">
+                <span class="btn-icon">📤</span>
+                <span>Upload New File</span>
+            </a>
+        </div>
+    </div>
+    
+    <div class="search-filter-bar">
+        <div class="search-box">
+            <input type="text" id="fileSearch" placeholder="Search files...">
+            <button class="search-btn">🔍</button>
+        </div>
+        <div class="filter-options">
+            <select id="sortFilter">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="name">Name (A-Z)</option>
+                <option value="size">Size (Largest)</option>
+            </select>
+        </div>
+    </div>
+    
+    {% if files %}
+    <div class="files-grid" id="filesGrid">
+        {% for file in files %}
+        <div class="file-card" data-filename="{{ file.original_filename }}" data-date="{{ file.created_at.isoformat() }}" data-size="{{ file.size }}">
+            <div class="file-card-header">
+                <div class="file-icon">
+                    {% if 'image' in file.mime_type %}🖼️
+                    {% elif 'pdf' in file.mime_type %}📑
+                    {% elif 'word' in file.mime_type or 'document' in file.mime_type %}📝
+                    {% elif 'excel' in file.mime_type or 'sheet' in file.mime_type %}📊
+                    {% elif 'presentation' in file.mime_type or 'powerpoint' in file.mime_type %}📽️
+                    {% elif 'zip' in file.mime_type or 'compressed' in file.mime_type %}🗜️
+                    {% elif 'audio' in file.mime_type %}🎵
+                    {% elif 'video' in file.mime_type %}🎬
+                    {% else %}📄{% endif %}
+                </div>
+                <div class="file-menu">
+                    <button class="menu-btn">⋮</button>
+                    <div class="dropdown-menu">
+                        <a href="{{ url_for('main.download', file_id=file.id) }}" class="menu-item">
+                            <span class="item-icon">🔓</span>
+                            <span>Decrypt</span>
+                        </a>
+                        <a href="{{ url_for('main.share_file', file_id=file.id) }}" class="menu-item">
+                            <span class="item-icon">🔗</span>
+                            <span>Share</span>
+                        </a>
+                        <button class="menu-item update-hint" data-file-id="{{ file.id }}" data-hint="{{ file.encryption_hint }}">
+                            <span class="item-icon">💡</span>
+                            <span>Update Hint</span>
+                        </button>
+                        <form action="{{ url_for('main.delete_file', file_id=file.id) }}" method="POST" class="menu-item delete-form">
+                            <button type="submit" class="menu-item delete-btn">
+                                <span class="item-icon">🗑️</span>
+                                <span>Delete</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="file-card-body">
+                <h3 class="file-name" title="{{ file.original_filename }}">{{ file.original_filename }}</h3>
+                <div class="file-meta">
+                    <p class="file-size">{{ (file.size / 1024)|round(1) }} KB</p>
+                    <p class="file-date">{{ file.created_at.strftime('%b %d, %Y') }}</p>
+                </div>
+                {% if file.encryption_hint %}
+                <div class="file-hint">
+                    <span class="hint-icon">💡</span>
+                    <p title="{{ file.encryption_hint }}">{{ file.encryption_hint }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="file-card-footer">
+                <a href="{{ url_for('main.download', file_id=file.id) }}" class="btn btn-secondary btn-sm">
+                    <span class="btn-icon">🔓</span>
+                    <span>Decrypt</span>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-files">
+        <div class="no-files-icon">📂</div>
+        <h3>No encrypted files yet</h3>
+        <p>Upload your first file to get started</p>
+        <a href="{{ url_for('main.upload') }}" class="btn btn-primary">Upload File</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Update Hint Modal -->
+<div class="modal" id="updateHintModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Update Password Hint</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="updateHintForm" method="POST">
+                <div class="form-group">
+                    <label for="encryption_hint">Password Hint</label>
+                    <input type="text" id="modal_encryption_hint" name="encryption_hint" placeholder="Enter a hint to help you remember this password">
+                    <div class="hint-note">
+                        <span class="note-icon">ℹ️</span>
+                        <p>This hint will be visible when you try to decrypt the file. Do not include your actual password in the hint.</p>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Hint</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File search functionality
+    const searchInput = document.getElementById('fileSearch');
+    const filesGrid = document.getElementById('filesGrid');
+    const fileCards = document.querySelectorAll('.file-card');
+    const sortFilter = document.getElementById('sortFilter');
+    
+    if (searchInput && filesGrid) {
+        searchInput.addEventListener('input', filterFiles);
+        
+        function filterFiles() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            fileCards.forEach(card => {
+                const fileName = card.dataset.filename.toLowerCase();
+                if (fileName.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    }
+    
+    // Sorting functionality
+    if (sortFilter && filesGrid) {
+        sortFilter.addEventListener('change', sortFiles);
+        
+        function sortFiles() {
+            const sortValue = sortFilter.value;
+            const cardsArray = Array.from(fileCards);
+            
+            cardsArray.sort((a, b) => {
+                switch (sortValue) {
+                    case 'newest':
+                        return new Date(b.dataset.date) - new Date(a.dataset.date);
+                    case 'oldest':
+                        return new Date(a.dataset.date) - new Date(b.dataset.date);
+                    case 'name':
+                        return a.dataset.filename.localeCompare(b.dataset.filename);
+                    case 'size':
+                        return parseInt(b.dataset.size) - parseInt(a.dataset.size);
+                    default:
+                        return 0;
+                }
+            });
+            
+            cardsArray.forEach(card => {
+                filesGrid.appendChild(card);
+            });
+        }
+    }
+    
+    // Dropdown menu toggle
+    const menuButtons = document.querySelectorAll('.menu-btn');
+    
+    menuButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = btn.nextElementSibling;
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.classList.remove('active');
+                }
+            });
+            
+            dropdown.classList.toggle('active');
+        });
+    });
+    
+    // Close dropdowns when clicking elsewhere
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('active');
+        });
+    });
+    
+    // Delete confirmation
+    const deleteForms = document.querySelectorAll('.delete-form');
+    
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            if (!confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Update hint modal
+    const updateHintButtons = document.querySelectorAll('.update-hint');
+    const modal = document.getElementById('updateHintModal');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const updateHintForm = document.getElementById('updateHintForm');
+    const modalHintInput = document.getElementById('modal_encryption_hint');
+    
+    updateHintButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const fileId = btn.dataset.fileId;
+            const currentHint = btn.dataset.hint || '';
+            
+            modalHintInput.value = currentHint;
+            updateHintForm.action = `/files/${fileId}/update_hint`;
+            modal.classList.add('active');
+        });
+    });
+    
+    closeModalButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+});
+</script>
+{% endblock %}

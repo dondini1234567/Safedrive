@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="drive-files-container">
+    <h1>Google Drive Files</h1>
+    
+    <div class="drive-info">
+        <p>These are the files stored in your SafeDrive folder on Google Drive.</p>
+    </div>
+    
+    {% if files %}
+        <div class="files-table">
+            <div class="table-header">
+                <div class="th file-name">File Name</div>
+                <div class="th file-type">Type</div>
+                <div class="th file-size">Size</div>
+                <div class="th file-date">Created</div>
+                <div class="th actions">Actions</div>
+            </div>
+            <div class="table-body">
+                {% for file in files %}
+                <div class="table-row">
+                    <div class="td file-name">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <h4>{{ file.name }}</h4>
+                        </div>
+                    </div>
+                    <div class="td file-type">{{ file.mimeType }}</div>
+                    <div class="td file-size">
+                        {% if file.size %}
+                            {{ (file.size|int / 1024)|round(1) }} KB
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
+                    <div class="td file-date">
+                        {{ file.createdTime.split('T')[0] if file.createdTime else '-' }}
+                    </div>
+                    <div class="td actions">
+                        {% if file.webViewLink %}
+                            <a href="{{ file.webViewLink }}" target="_blank" class="action-btn view-btn">
+                                <span>👁️</span>
+                                <span>View</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="no-files">
+            <p>No files found in your SafeDrive folder.</p>
+            <a href="{{ url_for('main.upload') }}" class="btn btn-primary">Upload a File</a>
+        </div>
+    {% endif %}
+    
+    <div class="drive-actions">
+        <a href="{{ url_for('drive_routes.debug') }}" class="btn btn-secondary">Debug Google Drive</a>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

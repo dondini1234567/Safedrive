@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="welcome-section">
+    <h1>Welcome back, <span class="user-name">{{ current_user.first_name }}</span></h1>
+    <p>Your files are secure with quantum-resistant encryption</p>
+</section>
+
+{% if not is_drive_connected %}
+<section class="drive-connect-section">
+    <div class="drive-connect-card">
+        <div class="drive-icon">☁️</div>
+        <div class="drive-info">
+            <h3>Connect to Google Drive</h3>
+            <p>You need to connect to Google Drive to upload and download encrypted files.</p>
+            <div class="drive-actions">
+                <a href="{{ url_for('drive_routes.connect', next=request.url) }}" class="btn btn-primary">Connect to Google Drive</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if uploaded_files %}
+<section class="recent-uploads-section">
+    <div class="section-header">
+        <h2>Recently Uploaded Files</h2>
+    </div>
+    <div class="recent-uploads-list">
+        {% for file in uploaded_files %}
+        <div class="upload-item">
+            <div class="upload-icon">📄</div>
+            <div class="upload-info">
+                <h4>{{ file.name }}</h4>
+                <p>Successfully uploaded to Google Drive</p>
+                <a href="{{ file.link }}" target="_blank" class="btn btn-sm btn-outline">View in Google Drive</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="debug-link">
+        <a href="{{ url_for('drive_routes.debug') }}" class="btn btn-sm btn-outline">Debug Google Drive Connection</a>
+    </div>
+</section>
+{% endif %}
+
+<section class="encryption-key-section">
+    <div class="encryption-key-card">
+        <div class="key-icon">🔑</div>
+        <div class="key-info">
+            <h3>Private Encryption</h3>
+            <p>Your files are encrypted with private passwords that only you know. These are different from your login password.</p>
+            <div class="key-actions">
+                <a href="{{ url_for('main.upload') }}" class="btn btn-secondary btn-sm">Upload File</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="stat-card">
+        <div class="stat-icon">🔒</div>
+        <div class="stat-info">
+            <h3>{{ total_files }}</h3>
+            <p>Encrypted Files</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📤</div>
+        <div class="stat-info">
+            <h3>{{ recent_files|length }}</h3>
+            <p>Recent Files</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💾</div>
+        <div class="stat-info">
+            <h3>{{ (total_size / 1024 / 1024)|round(1) }} MB</h3>
+            <p>Total Storage</p>
+        </div>
+    </div>
+</section>
+
+<section class="upload-section">
+    <div class="section-header">
+        <h2>Encrypt New Files</h2>
+        <p>Upload files to encrypt them with your password</p>
+    </div>
+    <div class="upload-area">
+        <a href="{{ url_for('main.upload') }}" class="upload-link">
+            <div class="upload-icon">📤</div>
+            <h3>Upload files to encrypt</h3>
+            <p>or</p>
+            <button class="btn btn-secondary">Browse Files</button>
+        </a>
+        <div class="encryption-note important">
+            <span class="note-icon">🔒</span>
+            <p>Files will be encrypted with your private encryption password, not your login password. You must remember this password to decrypt your files later.</p>
+        </div>
+    </div>
+</section>
+
+<section class="recent-files-section">
+    <div class="section-header">
+        <h2>Recent Files</h2>
+        <a href="{{ url_for('main.files') }}" class="view-all">View All</a>
+    </div>
+    {% if recent_files %}
+    <div class="files-table">
+        <div class="table-header">
+            <div class="th file-name">File Name</div>
+            <div class="th file-size">Size</div>
+            <div class="th encrypted-date">Encrypted On</div>
+            <div class="th actions">Actions</div>
+        </div>
+        <div class="table-body">
+            {% for file in recent_files %}
+            <div class="table-row">
+                <div class="td file-name">
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <h4>{{ file.original_filename }}</h4>
+                        <p>{{ file.mime_type }}</p>
+                    </div>
+                </div>
+                <div class="td file-size">{{ (file.size / 1024)|round(1) }} KB</div>
+                <div class="td encrypted-date">{{ file.created_at.strftime('%b %d, %Y') }}</div>
+                <div class="td actions">
+                    <a href="{{ url_for('main.download', file_id=file.id) }}" class="action-btn decrypt-btn">
+                        <span>🔓</span>
+                        <span>Decrypt</span>
+                    </a>
+                    <div class="decrypt-tooltip">
+                        <p>Enter your private encryption password to decrypt this file. This is not your login password.</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="no-files">
+        <p>You haven't encrypted any files yet.</p>
+        <a href="{{ url_for('main.upload') }}" class="btn btn-primary">Upload Your First File</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

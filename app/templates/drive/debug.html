@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="debug-container">
+    <h1>Google Drive Debug Information</h1>
+    
+    <div class="debug-section">
+        <h2>Connection Status</h2>
+        <div class="debug-item">
+            <span class="debug-label">client_secret.json exists:</span>
+            <span class="debug-value {% if debug_info.client_secret_exists %}success{% else %}error{% endif %}">
+                {{ debug_info.client_secret_exists }}
+            </span>
+        </div>
+        <div class="debug-item">
+            <span class="debug-label">Authenticated with Google Drive:</span>
+            <span class="debug-value {% if debug_info.authenticated %}success{% else %}error{% endif %}">
+                {{ debug_info.authenticated }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Credentials</h2>
+        {% if debug_info.credentials %}
+            {% if debug_info.credentials is string %}
+                <div class="debug-item">
+                    <span class="debug-value error">{{ debug_info.credentials }}</span>
+                </div>
+            {% else %}
+                <div class="debug-item">
+                    <span class="debug-label">Token:</span>
+                    <span class="debug-value">{{ debug_info.credentials.token[:10] }}... (truncated)</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Refresh Token:</span>
+                    <span class="debug-value {% if debug_info.credentials.refresh_token == 'Present' %}success{% else %}error{% endif %}">
+                        {{ debug_info.credentials.refresh_token }}
+                    </span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Token URI:</span>
+                    <span class="debug-value">{{ debug_info.credentials.token_uri }}</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Client ID:</span>
+                    <span class="debug-value">{{ debug_info.credentials.client_id[:15] }}... (truncated)</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Expiry:</span>
+                    <span class="debug-value">{{ debug_info.credentials.expiry }}</span>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="debug-item">
+                <span class="debug-value error">No credentials found in session</span>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="debug-section">
+        <h2>Uploaded Files</h2>
+        {% if debug_info.uploaded_files %}
+            <table class="debug-table">
+                <thead>
+                    <tr>
+                        <th>File ID</th>
+                        <th>Name</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in debug_info.uploaded_files %}
+                    <tr>
+                        <td>{{ file.id }}</td>
+                        <td>{{ file.name }}</td>
+                        <td><a href="{{ file.link }}" target="_blank">View in Drive</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="debug-item">
+                <span class="debug-value">No uploaded files found in session</span>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="debug-section">
+        <h2>Session Keys</h2>
+        <div class="debug-item">
+            <ul class="debug-list">
+                {% for key in debug_info.session_keys %}
+                <li>{{ key }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <div class="debug-actions">
+        <a href="{{ url_for('drive_routes.connect') }}" class="btn btn-primary">Reconnect to Google Drive</a>
+        <a href="{{ url_for('drive_routes.disconnect') }}" class="btn btn-danger">Disconnect from Google Drive</a>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

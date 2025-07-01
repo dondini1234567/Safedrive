@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="drive-storage-container">
+    <h1>Google Drive Storage</h1>
+    
+    <div class="storage-info">
+        <p>Here's an overview of your Google Drive storage usage.</p>
+    </div>
+    
+    <div class="storage-card">
+        <div class="storage-header">
+            <h2>Storage Overview</h2>
+        </div>
+        
+        <div class="storage-details">
+            <div class="storage-item">
+                <div class="storage-label">Total Storage:</div>
+                <div class="storage-value">{{ storage_info.total }} MB</div>
+            </div>
+            
+            <div class="storage-item">
+                <div class="storage-label">Used Storage:</div>
+                <div class="storage-value">{{ storage_info.used }} MB</div>
+            </div>
+            
+            <div class="storage-item">
+                <div class="storage-label">Used in Drive:</div>
+                <div class="storage-value">{{ storage_info.used_in_drive }} MB</div>
+            </div>
+            
+            <div class="storage-item">
+                <div class="storage-label">Free Storage:</div>
+                <div class="storage-value">{{ storage_info.free }} MB</div>
+            </div>
+        </div>
+        
+        <div class="storage-progress">
+            <div class="progress-label">
+                <span>{{ storage_info.percent_used }}% Used</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ storage_info.percent_used }}%"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="drive-actions">
+        <a href="{{ url_for('drive_routes.files') }}" class="btn btn-primary">View Files</a>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

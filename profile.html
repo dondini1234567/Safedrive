@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | QuantumVault</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="QuantumVault Logo">
+                    <h1>QuantumVault</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔒</span>
+                            <span>Encrypted Files</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">📤</span>
+                            <span>Upload</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔄</span>
+                            <span>Activity</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <span class="nav-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile active">
+                    <div class="avatar">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <h4>Alex Johnson</h4>
+                        <p>alex@example.com</p>
+                    </div>
+                </a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="app-header">
+                <div class="page-title">
+                    <h1>Profile</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="notification-btn">🔔</button>
+                    <a href="profile.html" class="profile-link active">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </a>
+                </div>
+            </header>
+            <div class="profile-content">
+                <section class="profile-header">
+                    <div class="profile-cover">
+                        <div class="cover-overlay"></div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <img src="assets/avatar.png" alt="User Avatar">
+                            <button class="change-avatar-btn">Change</button>
+                        </div>
+                        <div class="profile-details">
+                            <h2>Alex Johnson</h2>
+                            <p>alex@example.com</p>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-value">12</span>
+                                    <span class="stat-label">Files</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">May 1, 2025</span>
+                                    <span class="stat-label">Member Since</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value">24 MB</span>
+                                    <span class="stat-label">Storage Used</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a href="settings.html" class="btn btn-secondary">Edit Profile</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="profile-tabs">
+                    <div class="tabs">
+                        <button class="tab active">Overview</button>
+                        <button class="tab">Activity</button>
+                        <button class="tab">Security</button>
+                    </div>
+                </section>
+                <section class="profile-overview">
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3>Account Information</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-item">
+                                <span class="info-label">Full Name</span>
+                                <span class="info-value">Alex Johnson</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">alex@example.com</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Member Since</span>
+                                <span class="info-value">May 1, 2025</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Last Login</span>
+                                <span class="info-value">May 15, 2025 (Today)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Two-Factor Authentication</span>
+                                <span class="info-value status-enabled">Enabled</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3>Storage Usage</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="storage-usage">
+                                <div class="usage-bar">
+                                    <div class="usage-fill" style="width: 24%;"></div>
+                                </div>
+                                <div class="usage-stats">
+                                    <span>24 MB used of 100 MB</span>
+                                    <span>24%</span>
+                                </div>
+                            </div>
+                            <div class="storage-breakdown">
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color pdf"></div>
+                                    <span class="breakdown-label">PDF Documents</span>
+                                    <span class="breakdown-value">10 MB</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color doc"></div>
+                                    <span class="breakdown-label">Word Documents</span>
+                                    <span class="breakdown-value">8 MB</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <div class="breakdown-color img"></div>
+                                    <span class="breakdown-label">Images</span>
+                                    <span class="breakdown-value">6 MB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="card-content">
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon encrypt">🔒</div>
+                                    <div class="activity-details">
+                                        <h4>Encrypted financial_report_2025.pdf</h4>
+                                        <p>May 12, 2025 at 10:23 AM</p>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon decrypt">🔓</div>
+                                    <div class="activity-details">
+                                        <h4>Decrypted project_proposal.docx</h4>
+                                        <p>May 10, 2025 at 3:45 PM</p>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon login">🔑</div>
+                                    <div class="activity-details">
+                                        <h4>Logged in from new device</h4>
+                                        <p>May 8, 2025 at 9:12 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

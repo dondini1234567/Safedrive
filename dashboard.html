@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | QuantumVault</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="QuantumVault Logo">
+                    <h1>QuantumVault</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="dashboard.html">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔒</span>
+                            <span>Encrypted Files</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">📤</span>
+                            <span>Upload</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="nav-icon">🔄</span>
+                            <span>Activity</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <span class="nav-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile">
+                    <div class="avatar">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <h4>Alex Johnson</h4>
+                        <p>alex@example.com</p>
+                    </div>
+                </a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="app-header">
+                <div class="header-search">
+                    <input type="text" placeholder="Search encrypted files...">
+                    <button class="search-btn">🔍</button>
+                </div>
+                <div class="header-actions">
+                    <button class="notification-btn">🔔</button>
+                    <a href="profile.html" class="profile-link">
+                        <img src="assets/avatar.png" alt="User Avatar">
+                    </a>
+                </div>
+            </header>
+            <div class="dashboard-content">
+                <section class="welcome-section">
+                    <h1>Welcome back, <span class="user-name">Alex</span></h1>
+                    <p>Your files are secure with quantum-resistant encryption</p>
+                </section>
+                <section class="encryption-key-section">
+                    <div class="encryption-key-card">
+                        <div class="key-icon">🔑</div>
+                        <div class="key-info">
+                            <h3>Private Encryption</h3>
+                            <p>Your files are encrypted with private passwords that only you know. These are different from your login password.</p>
+                            <div class="key-actions">
+                                <button class="btn btn-secondary btn-sm">Learn More</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔒</div>
+                        <div class="stat-info">
+                            <h3>12</h3>
+                            <p>Encrypted Files</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📤</div>
+                        <div class="stat-info">
+                            <h3>3</h3>
+                            <p>Recent Uploads</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📥</div>
+                        <div class="stat-info">
+                            <h3>5</h3>
+                            <p>Recent Decryptions</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="upload-section">
+                    <div class="section-header">
+                        <h2>Encrypt New Files</h2>
+                        <p>Drag and drop files to encrypt them with your password</p>
+                    </div>
+                    <div class="upload-area">
+                        <div class="upload-icon">📤</div>
+                        <h3>Drop files here to encrypt</h3>
+                        <p>or</p>
+                        <button class="btn btn-secondary">Browse Files</button>
+                        <div class="encryption-note important">
+                            <span class="note-icon">🔒</span>
+                            <p>Files will be encrypted with your private encryption password, not your login password. You must remember this password to decrypt your files later.</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="recent-files-section">
+                    <div class="section-header">
+                        <h2>Recent Files</h2>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="files-table">
+                        <div class="table-header">
+                            <div class="th file-name">File Name</div>
+                            <div class="th file-size">Size</div>
+                            <div class="th encrypted-date">Encrypted On</div>
+                            <div class="th actions">Actions</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-row">
+                                <div class="td file-name">
+                                    <div class="file-icon">📄</div>
+                                    <div class="file-info">
+                                        <h4>financial_report_2025.pdf</h4>
+                                        <p>PDF Document</p>
+                                    </div>
+                                </div>
+                                <div class="td file-size">2.4 MB</div>
+                                <div class="td encrypted-date">May 12, 2025</div>
+                                <div class="td actions">
+                                    <button class="action-btn decrypt-btn">
+                                        <span>🔓</span>
+                                        <span>Decrypt</span>
+                                    </button>
+                                    <div class="decrypt-tooltip">
+                                        <p>Enter your private encryption password to decrypt this file. This is not your login password.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-row">
+                                <div class="td file-name">
+                                    <div class="file-icon">📄</div>
+                                    <div class="file-info">
+                                        <h4>project_proposal.docx</h4>
+                                        <p>Word Document</p>
+                                    </div>
+                                </div>
+                                <div class="td file-size">1.8 MB</div>
+                                <div class="td encrypted-date">May 10, 2025</div>
+                                <div class="td actions">
+                                    <button class="action-btn decrypt-btn">
+                                        <span>🔓</span>
+                                        <span>Decrypt</span>
+                                    </button>
+                                    <div class="decrypt-tooltip">
+                                        <p>Enter your private encryption password to decrypt this file. This is not your login password.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-row">
+                                <div class="td file-name">
+                                    <div class="file-icon">📄</div>
+                                    <div class="file-info">
+                                        <h4>client_database.xlsx</h4>
+                                        <p>Excel Spreadsheet</p>
+                                    </div>
+                                </div>
+                                <div class="td file-size">3.2 MB</div>
+                                <div class="td encrypted-date">May 8, 2025</div>
+                                <div class="td actions">
+                                    <button class="action-btn decrypt-btn">
+                                        <span>🔓</span>
+                                        <span>Decrypt</span>
+                                    </button>
+                                    <div class="decrypt-tooltip">
+                                        <p>Enter your private encryption password to decrypt this file. This is not your login password.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="decrypt-section">
+                    <div class="section-header">
+                        <h2>Decrypt Files</h2>
+                        <p>Enter your password to decrypt selected files</p>
+                    </div>
+                    <div class="decrypt-form">
+                        <div class="form-group">
+                            <label for="decrypt-password">Your Private Encryption Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="decrypt-password" placeholder="Enter your private encryption password">
+                            </div>
+                            <div class="password-note important">
+                                <span class="note-icon">⚠️</span>
+                                <p>This is NOT your login password. You must use the private password you created when encrypting this file. We cannot recover this password for you.</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Decrypt Selected Files</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-content">
+    <div class="settings-sidebar">
+        <ul class="settings-nav">
+            <li class="active"><a href="#account">Account Settings</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#notifications">Notifications</a></li>
+            <li><a href="#encryption">Encryption Preferences</a></li>
+            <li><a href="#advanced">Advanced</a></li>
+        </ul>
+    </div>
+    <div class="settings-main">
+        <section id="account" class="settings-section">
+            <div class="section-header">
+                <h2>Account Settings</h2>
+                <p>Manage your account information</p>
+            </div>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" value="{{ current_user.first_name }} {{ current_user.last_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" value="{{ current_user.email }}" disabled>
+                    <div class="input-note">
+                        <span class="note-icon">ℹ️</span>
+                        <p>Email address cannot be changed</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="timezone">Timezone</label>
+                    <select id="timezone">
+                        <option value="utc-8">Pacific Time (UTC-8)</option>
+                        <option value="utc-5">Eastern Time (UTC-5)</option>
+                        <option value="utc+0">UTC</option>
+                        <option value="utc+1">Central European Time (UTC+1)</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </section>
+        <section id="security" class="settings-section">
+            <div class="section-header">
+                <h2>Security</h2>
+                <p>Manage your security settings</p>
+            </div>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label>Change Password</label>
+                    <div class="password-change-form">
+                        <div class="input-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password">
+                        </div>
+                        <div class="input-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password">
+                        </div>
+                        <div class="input-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password">
+                        </div>
+                        <div class="password-warning">
+                            <div class="warning-icon">⚠️</div>
+                            <p>Important: This only changes your account login password. Your private encryption passwords are separate and will not be affected. You'll still need your original encryption passwords to decrypt previously encrypted files.</p>
+                        </div>
+                        <button class="btn btn-primary">Update Password</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Two-Factor Authentication</label>
+                    <div class="toggle-container">
+                        <label class="toggle">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span>Enable 2FA for additional security</span>
+                    </div>
+                    <button class="btn btn-secondary">Set Up 2FA</button>
+                </div>
+                <div class="form-group">
+                    <label>Session Management</label>
+                    <div class="session-list">
+                        <div class="session-item">
+                            <div class="session-info">
+                                <h4>Current Session</h4>
+                                <p>Chrome on Windows • IP: 192.168.1.1</p>
+                                <p>Started: May 15, 2025</p>
+                            </div>
+                            <div class="session-actions">
+                                <span class="active-badge">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger">Logout of All Sessions</button>
+                </div>
+            </div>
+        </section>
+        <section id="encryption" class="settings-section">
+            <div class="section-header">
+                <h2>Encryption Preferences</h2>
+                <p>Manage your encryption settings</p>
+            </div>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label>Private Encryption Passwords</label>
+                    <div class="encryption-info">
+                        <div class="info-icon">ℹ️</div>
+                        <p>Your private encryption passwords are never stored on our servers. Each file is encrypted with the password you provide at encryption time. You must remember these passwords to decrypt your files.</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password Manager</label>
+                    <div class="encryption-warning">
+                        <div class="warning-icon">⚠️</div>
+                        <p>We strongly recommend using a secure password manager to store your encryption passwords. If you forget a private encryption password, we cannot recover your data.</p>
+                    </div>
+                    <button class="btn btn-secondary">Export Password Hints</button>
+                </div>
+                <div class="form-group">
+                    <label>Default Encryption Strength</label>
+                    <select id="encryption-strength">
+                        <option value="standard">Standard (Recommended)</option>
+                        <option value="high">High (Slower)</option>
+                        <option value="maximum">Maximum (Very Slow)</option>
+                    </select>
+                    <div class="input-note">
+                        <span class="note-icon">ℹ️</span>
+                        <p>Higher encryption strength provides better security but takes longer to encrypt and decrypt files.</p>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <label>Account Actions</label>
+                    <div class="account-actions">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger logout-btn">Logout</a>
+                        <p class="input-note" style="margin-top: 10px;">
+                            <span class="note-icon">ℹ️</span>
+                            <span>This will log you out of your account immediately.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Settings navigation
+    const navItems = document.querySelectorAll('.settings-nav li');
+    const sections = document.querySelectorAll('.settings-section');
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all items
+            navItems.forEach(i => i.classList.remove('active'));
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Show corresponding section
+            const targetId = this.querySelector('a').getAttribute('href').substring(1);
+            sections.forEach(section => {
+                if (section.id === targetId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Password strength meter for new password
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmNewPasswordInput = document.getElementById('confirm-new-password');
+    
+    if (newPasswordInput) {
+        newPasswordInput.addEventListener('input', function() {
+            // Add password strength meter logic here
+        });
+    }
+    
+    if (confirmNewPasswordInput) {
+        confirmNewPasswordInput.addEventListener('input', function() {
+            // Add password match validation here
+        });
+    }
+});
+</script>
+{% endblock %}

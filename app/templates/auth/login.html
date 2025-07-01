@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="auth-sidebar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="SafeDrive Logo">
+        <h1>SafeDrive</h1>
+    </div>
+    <div class="auth-sidebar-content">
+        <h2>Welcome Back</h2>
+        <p>Access your encrypted files with the security of post-quantum cryptography.</p>
+        <div class="encryption-visual">
+            <div class="encryption-grid">
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="auth-form-container">
+    <div class="auth-form-wrapper">
+        <div class="auth-form-header">
+            <h2>Login to Your Account</h2>
+            <p>Enter your credentials to access your encrypted files</p>
+        </div>
+        <form class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="password-note">
+                        <span class="icon">ℹ️</span>
+                        <span class="note-text">This is your account login password. You'll use a separate private password for file encryption.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-password">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Login</button>
+            <div id="loginError" class="error-message" style="display: none; color: red; margin-top: 10px;"></div>
+        </form>
+        <div class="auth-form-footer">
+            <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Sign up</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        // Clear previous error
+        loginError.style.display = 'none';
+        
+        // Send login request
+        fetch('{{ url_for("auth.login") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
+                // Successful login
+                window.location.href = data.redirect_url;
+            } else if (data.message) {
+                // Show error message
+                loginError.textContent = data.message;
+                loginError.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            loginError.textContent = 'Invalid Email or Password. Please try again.';
+            loginError.style.display = 'block';
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
+{% endblock %}

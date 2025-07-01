@@ -1,0 +1,166 @@
+/* Page Transition Loading Animation */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(26, 26, 46, 0.7);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.page-transition-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  width: 400px;
+}
+
+.page-transition-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+}
+
+.page-transition-spinner:before,
+.page-transition-spinner:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation-duration: 1.8s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  filter: drop-shadow(0 0 2px rgba(108, 99, 255, 0.75));
+}
+
+.page-transition-spinner:before {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(108, 99, 255, 0.15);
+  animation-name: pulse;
+}
+
+.page-transition-spinner:after {
+  width: 82%;
+  height: 82%;
+  background-color: white;
+  top: 9%;
+  left: 9%;
+  animation-name: pulse-inner;
+}
+
+.page-transition-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-size: 2rem;
+  color: #6c63ff;
+}
+
+.page-transition-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.5rem;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.page-transition-message {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.page-transition-progress {
+  height: 6px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.page-transition-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #6c63ff, #00d9ff);
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 3px;
+}
+
+.page-transition-destination {
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulse-inner {
+  0% {
+    transform: scale(0.97);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.97);
+  }
+}
+
+/* Progress animation for the top bar */
+.page-transition-top-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6c63ff, #00d9ff);
+  z-index: 10000;
+  width: 0%;
+  transition: width 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .page-transition-content {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .page-transition-spinner {
+    width: 60px;
+    height: 60px;
+  }
+
+  .page-transition-title {
+    font-size: 1.2rem;
+  }
+}

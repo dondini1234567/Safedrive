@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}SafeDrive</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/page-transition.css') }}">
+    {% if page_specific_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/' + page_specific_css) }}">
+    {% endif %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="SafeDrive Logo">
+                    <h1>SafeDrive</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="{{ 'active' if request.endpoint == 'main.dashboard' else '' }}">
+                        <a href="{{ url_for('main.dashboard') }}">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="{{ 'active' if request.endpoint == 'main.files' else '' }}">
+                        <a href="{{ url_for('main.files') }}">
+                            <span class="nav-icon">🔒</span>
+                            <span>Encrypted Files</span>
+                        </a>
+                    </li>
+                    <li class="{{ 'active' if request.endpoint == 'main.upload' else '' }}">
+                        <a href="{{ url_for('main.upload') }}">
+                            <span class="nav-icon">📤</span>
+                            <span>Upload</span>
+                        </a>
+                    </li>
+                    <li class="{{ 'active' if request.endpoint == 'main.shared_files' else '' }}">
+                        <a href="{{ url_for('main.shared_files') }}">
+                            <span class="nav-icon">🔄</span>
+                            <span>Shared Enrypted Files</span>
+                        </a>
+                    </li>
+                    <li class="{{ 'active' if request.endpoint == 'main.settings' else '' }}">
+                        <a href="{{ url_for('main.settings') }}">
+                            <span class="nav-icon">⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="{{ 'active' if request.endpoint == 'main.messages' else '' }}">
+    <a href="{{ url_for('main.messages') }}">
+        <span class="nav-icon">💬</span>
+        <span>Messages</span>
+    </a>
+</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">
+                        <img src="{{ current_user.get_profile_image_url() }}" alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <h4>{{ current_user.first_name }} {{ current_user.last_name }}</h4>
+                        <p>{{ current_user.email }}</p>
+                    </div>
+                </div>
+                <div class="logout-container">
+                    <a href="{{ url_for('auth.logout') }}" class="logout-btn" onclick="console.log('Sidebar logout clicked')">
+                        <span class="logout-icon">🚪</span>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="app-header">
+                {% if request.endpoint != 'main.dashboard' %}
+                <div class="page-title">
+                    <h1>{{ title }}</h1>
+                </div>
+                {% else %}
+                <div class="header-search">
+                    <form action="{{ url_for('main.files') }}" method="GET">
+                        <input type="text" name="q" placeholder="Search encrypted files...">
+                        <button type="submit" class="search-btn">🔍</button>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="header-actions">
+                    <button class="notification-btn">🔔</button>
+                    <div class="user-dropdown">
+                        <img src="{{ current_user.get_profile_image_url() }}" alt="User Avatar" class="user-avatar">
+                        <div class="dropdown-content">
+                            <a href="{{ url_for('main.profile') }}">Profile</a>
+                            <a href="{{ url_for('main.settings') }}">Settings</a>
+                            <a href="{{ url_for('auth.logout') }}" class="logout-link">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    <span class="message-icon">
+                        {% if category == 'success' %}✅
+                        {% elif category == 'error' %}❌
+                        {% elif category == 'warning' %}⚠️
+                        {% else %}ℹ️{% endif %}
+                    </span>
+                    <span class="message-text">{{ message }}</span>
+                    <button class="close-btn">×</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    {% else %}
+    <div class="auth-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                <span class="message-icon">
+                    {% if category == 'success' %}✅
+                    {% elif category == 'error' %}❌
+                    {% elif category == 'warning' %}⚠️
+                    {% else %}ℹ️{% endif %}
+                </span>
+                <span class="message-text">{{ message }}</span>
+                <button class="close-btn">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% block auth_content %}{% endblock %}
+    </div>
+    {% endif %}
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transition.js') }}"></script>
+    {% if page_specific_js %}
+    <script src="{{ url_for('static', filename='js/' + page_specific_js) }}"></script>
+    {% endif %}
+    {% block scripts %}{% endblock %}
+</body>
+</html>

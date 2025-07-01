@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="encryption-details-container">
+    <div class="encryption-header">
+        <h1>Quantum-Resistant Encryption</h1>
+        <p class="subtitle">Understanding how SafeDrive protects your files</p>
+    </div>
+
+    <div class="encryption-section">
+        <div class="section-header">
+            <div class="section-icon">🔒</div>
+            <h2>What is NTRU Encryption?</h2>
+        </div>
+        <div class="section-content">
+            <p>NTRU (Nth Degree Truncated Polynomial Ring Units) is a lattice-based public key cryptosystem that offers quantum-resistant security. Unlike traditional encryption methods like RSA and ECC that can be broken by quantum computers, NTRU is designed to withstand attacks from both classical and quantum computers.</p>
+            
+            <div class="info-card">
+                <div class="info-card-header">
+                    <span class="info-icon">ℹ️</span>
+                    <h3>Why Quantum-Resistant?</h3>
+                </div>
+                <p>Quantum computers can easily break traditional encryption using Shor's algorithm, which can factor large numbers exponentially faster than classical computers. NTRU's security is based on the hardness of solving certain lattice problems, which are believed to be resistant to quantum attacks.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="encryption-section">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2>How NTRU Works</h2>
+        </div>
+        <div class="section-content">
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Key Generation</h4>
+                        <p>NTRU generates a public-private key pair based on polynomial mathematics. The private key consists of two small polynomials, while the public key is derived from these.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Encryption</h4>
+                        <p>When you upload a file, it's encrypted using your password and the NTRU algorithm. This process converts your file into an encrypted form that can only be decrypted with the correct password.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Decryption</h4>
+                        <p>When you download a file, you provide the password, which is used to decrypt the file back to its original form. Without the correct password, the file remains securely encrypted.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="encryption-visual">
+                <div class="visual-header">
+                    <h3>NTRU vs Traditional Encryption</h3>
+                </div>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>NTRU (SafeDrive)</th>
+                                <th>RSA/ECC (Traditional)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Quantum Resistance</td>
+                                <td><span class="check">✓</span> Resistant</td>
+                                <td><span class="cross">✗</span> Vulnerable</td>
+                            </tr>
+                            <tr>
+                                <td>Speed</td>
+                                <td><span class="check">✓</span> Faster</td>
+                                <td><span class="cross">✗</span> Slower</td>
+                            </tr>
+                            <tr>
+                                <td>Key Size</td>
+                                <td><span class="check">✓</span> Smaller</td>
+                                <td><span class="cross">✗</span> Larger</td>
+                            </tr>
+                            <tr>
+                                <td>Future-proof</td>
+                                <td><span class="check">✓</span> Yes</td>
+                                <td><span class="cross">✗</span> No</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="encryption-section">
+        <div class="section-header">
+            <div class="section-icon">🛡️</div>
+            <h2>Security Features</h2>
+        </div>
+        <div class="section-content">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>End-to-End Encryption</h3>
+                    <p>Files are encrypted before leaving your device and remain encrypted in storage. Only you (or those you share with) can decrypt them.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔑</div>
+                    <h3>Password Protection</h3>
+                    <p>Each file can be encrypted with a unique password, adding an extra layer of security.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Two-Factor Authentication</h3>
+                    <p>Account access is protected by 2FA, ensuring only authorized users can access your encrypted files.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Secure Sharing</h3>
+                    <p>Share encrypted files with other users while maintaining encryption throughout the process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="encryption-section">
+        <div class="section-header">
+            <div class="section-icon">❓</div>
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="section-content">
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>What happens if I forget my encryption password?</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Unfortunately, if you forget your encryption password, there is no way to recover your file. This is a security feature - not even SafeDrive administrators can decrypt your files without the password. This is why we recommend using password hints (which are stored separately) to help you remember.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>Are my files safe from quantum computers?</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! SafeDrive uses NTRU encryption, which is designed to be resistant to attacks from quantum computers. While traditional encryption methods like RSA are vulnerable to quantum computing attacks, NTRU's mathematical foundation makes it secure against both classical and quantum computing threats.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>Can SafeDrive access my encrypted files?</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. SafeDrive uses client-side encryption, which means your files are encrypted on your device before being uploaded. The encryption keys (your passwords) are never sent to our servers. This means that even if our servers were compromised, your files would remain secure.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>How secure is the encryption compared to other services?</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>SafeDrive's NTRU encryption offers superior security compared to many commercial services that use traditional encryption methods. While services like Dropbox and Google Drive encrypt data in transit and at rest, they typically hold the encryption keys, meaning they could potentially access your files. SafeDrive's approach ensures that only you control access to your data.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>Does encryption slow down file uploads and downloads?</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>NTRU encryption is actually more efficient than many traditional encryption methods. While there is always some processing overhead for encryption and decryption, NTRU is designed to be fast and efficient. For most files, you'll notice minimal impact on upload and download speeds.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="encryption-section">
+        <div class="section-header">
+            <div class="section-icon">📚</div>
+            <h2>Technical Details</h2>
+        </div>
+        <div class="section-content">
+            <div class="technical-details">
+                <p>For those interested in the technical aspects of NTRU encryption, here are some key details:</p>
+                <ul>
+                    <li><strong>Parameter Sets:</strong> SafeDrive uses NTRU parameter sets that provide at least 128 bits of security, which is considered highly secure even against quantum computers.</li>
+                    <li><strong>Key Size:</strong> NTRU public keys are typically around 1-2KB, much smaller than equivalent security levels in post-quantum alternatives.</li>
+                    <li><strong>Mathematical Foundation:</strong> NTRU's security is based on the Shortest Vector Problem (SVP) in lattices, which is believed to be hard even for quantum computers.</li>
+                    <li><strong>Implementation:</strong> SafeDrive uses a carefully audited implementation of NTRU that follows best practices for cryptographic code.</li>
+                </ul>
+                
+                <div class="code-example">
+                    <h4>Simplified NTRU Process</h4>
+                    <pre><code>
+# Key Generation
+private_key = generate_ntru_private_key(params)
+public_key = derive_public_key(private_key, params)
+
+# Encryption
+encrypted_file = ntru_encrypt(original_file, password, public_key)
+
+# Decryption
+decrypted_file = ntru_decrypt(encrypted_file, password, private_key)
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="encryption-cta">
+        <h2>Ready to secure your files with quantum-resistant encryption?</h2>
+        <div class="cta-buttons">
+            <a href="{{ url_for('main.upload') }}" class="btn btn-primary">Upload & Encrypt Files</a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // FAQ toggle functionality
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+            const toggleIcon = item.querySelector('.toggle-icon');
+            
+            question.addEventListener('click', () => {
+                // Close all other answers
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.faq-answer').classList.remove('active');
+                        otherItem.querySelector('.toggle-icon').textContent = '+';
+                    }
+                });
+                
+                // Toggle current answer
+                answer.classList.toggle('active');
+                toggleIcon.textContent = answer.classList.contains('active') ? '−' : '+';
+            });
+        });
+    });
+</script>
+{% endblock %}

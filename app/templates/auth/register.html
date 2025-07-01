@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="auth-sidebar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="SafeDrive Logo">
+        <h1>SafeDrive</h1>
+    </div>
+    <div class="auth-sidebar-content">
+        <h2>Join the Future of Security</h2>
+        <p>Create your account and start protecting your files with quantum-resistant encryption.</p>
+        <div class="encryption-visual">
+            <div class="encryption-grid">
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="auth-form-container">
+    <div class="auth-form-wrapper">
+        <div class="auth-form-header">
+            <h2>Create Your Account</h2>
+            <p>Sign up to start encrypting your files</p>
+        </div>
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <div class="input-wrapper">
+                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <div class="input-wrapper">
+                    <input type="text" id="last_name" name="last_name" placeholder="Enter your last name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                    <div class="password-note">
+                        <span class="icon">🔒</span>
+                        <span class="note-text">This is your account login password. You'll create separate private passwords for encrypting your files.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                </div>
+            </div>
+            <div class="form-options">
+                <div class="terms-agreement">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+            <div id="registerError" class="error-message" style="display: none; color: red; margin-top: 10px;"></div>
+        </form>
+        <div class="auth-form-footer">
+            <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('registerForm');
+    const registerError = document.getElementById('registerError');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    
+    // Password match validation
+    confirmPasswordInput.addEventListener('input', function() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity("Passwords don't match");
+        } else {
+            confirmPasswordInput.setCustomValidity('');
+        }
+    });
+    
+    registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Check if passwords match
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            registerError.textContent = "Passwords don't match";
+            registerError.style.display = 'block';
+            return;
+        }
+        
+        // Check if terms are accepted
+        if (!document.getElementById('terms').checked) {
+            registerError.textContent = "You must accept the Terms of Service and Privacy Policy";
+            registerError.style.display = 'block';
+            return;
+        }
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const firstName = document.getElementById('first_name').value;
+        const lastName = document.getElementById('last_name').value;
+        
+        // Clear previous error
+        registerError.style.display = 'none';
+        
+        // Send registration request
+        fetch('{{ url_for("auth.register") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                first_name: firstName,
+                last_name: lastName
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.user_id) {
+                // Successful registration, show verification message
+                registerForm.innerHTML = `
+                    <div class="success-message">
+                        <h3>Registration Successful!</h3>
+                        <p>We've sent a verification code to your email. Please check your inbox and enter the code below to verify your account.</p>
+                        <div class="form-group">
+                            <label for="otp">Verification Code</label>
+                            <input type="text" id="otp" name="otp" placeholder="Enter verification code" required>
+                        </div>
+                        <button type="button" id="verifyBtn" class="btn btn-primary btn-full">Verify Email</button>
+                        <p class="resend-link">Didn't receive the code? <a href="#" id="resendOtp">Resend</a></p>
+                    </div>
+                `;
+                
+                // Store user ID for verification
+                localStorage.setItem('pendingUserId', data.user_id);
+                
+                // Add event listener for verification
+                document.getElementById('verifyBtn').addEventListener('click', verifyEmail);
+                document.getElementById('resendOtp').addEventListener('click', resendOtp);
+            } else if (data.message) {
+                // Show error message
+                registerError.textContent = data.message;
+                registerError.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            registerError.textContent = 'An error occurred. Please try again.';
+            registerError.style.display = 'block';
+            console.error('Error:', error);
+        });
+    });
+    
+    function verifyEmail() {
+        const otp = document.getElementById('otp').value;
+        const userId = localStorage.getItem('pendingUserId');
+        
+        if (!otp || !userId) {
+            registerError.textContent = 'Verification code is required';
+            registerError.style.display = 'block';
+            return;
+        }
+        
+        fetch('{{ url_for("auth.verify_email") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                otp: otp
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+    if (data.message === 'Email verified successfully') {
+        // Show success message with prompt for next steps
+        registerForm.innerHTML = `
+            <div class="success-message">
+                <h3>Email Verified Successfully!</h3>
+                <p>Your account has been created and your email has been verified.</p>
+                <div class="welcome-prompt">
+                    <p>What would you like to do next?</p>
+                    <div class="prompt-actions">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login to Your Account</a>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Go to Homepage</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        registerError.textContent = data.message || 'Invalid verification code';
+        registerError.style.display = 'block';
+    }
+})
+        .catch(error => {
+            registerError.textContent = 'An error occurred. Please try again.';
+            registerError.style.display = 'block';
+            console.error('Error:', error);
+        });
+    }
+    
+    function resendOtp(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        
+        fetch('{{ url_for("auth.resend_otp") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.user_id) {
+                alert('A new verification code has been sent to your email.');
+            } else {
+                registerError.textContent = data.message || 'Failed to resend verification code';
+                registerError.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            registerError.textContent = 'An error occurred. Please try again.';
+            registerError.style.display = 'block';
+            console.error('Error:', error);
+        });
+    }
+});
+</script>
+{% endblock %}
+
+<style>
+.success-message {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.success-message h3 {
+    color: var(--success-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.welcome-prompt {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background-color: var(--light-bg);
+    border-radius: var(--radius-lg);
+}
+
+.prompt-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+</style>

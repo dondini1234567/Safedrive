@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
+{% endblock %}
+
+{% block content %}
+{% if not is_drive_connected %}
+<div class="drive-connect-required">
+    <div class="drive-connect-card">
+        <div class="drive-icon">☁️</div>
+        <div class="drive-info">
+            <h3>Connect to Google Drive First</h3>
+            <p>You need to connect to Google Drive before you can upload and encrypt files.</p>
+            <div class="drive-actions">
+                <a href="{{ url_for('drive_routes.connect', next=request.url) }}" class="btn btn-primary">Connect to Google Drive</a>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="upload-container">
+    <div class="upload-header">
+        <h2>Encrypt and Upload File</h2>
+        <p>Select a file to encrypt with your private password</p>
+    </div>
+    
+    <form class="upload-form" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <div class="file-drop-area" id="dropArea">
+            <input type="file" id="fileInput" name="file" class="file-input" required>
+            <div class="file-msg">
+                <div class="upload-icon">📤</div>
+                <h3>Drag & drop files here</h3>
+                <p>or</p>
+                <button type="button" class="btn btn-secondary" id="browseBtn">Browse Files</button>
+            </div>
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="preview-icon">📄</div>
+                <div class="preview-details">
+                    <h4 id="fileName">filename.ext</h4>
+                    <p id="fileSize">0 KB</p>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" id="removeFileBtn">Remove</button>
+            </div>
+        </div>
+        
+        <div class="password-section">
+            <div class="form-group">
+                <label for="encryption_password">Encryption Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="encryption_password" name="encryption_password" required>
+                    <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                </div>
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-meter">
+                        <div class="strength-segment" data-strength="1"></div>
+                        <div class="strength-segment" data-strength="2"></div>
+                        <div class="strength-segment" data-strength="3"></div>
+                        <div class="strength-segment" data-strength="4"></div>
+                    </div>
+                    <p class="strength-text">Password strength: <span id="strengthText">None</span></p>
+                </div>
+                <div class="password-note important">
+                    <span class="note-icon">⚠️</span>
+                    <p>This password will be used to encrypt your file. It is NOT your login password. You must remember this password to decrypt your file later.</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                    <button type="button" class="toggle-password" id="toggleConfirmPassword">👁️</button>
+                </div>
+                <div class="password-match" id="passwordMatch">
+                    <span class="match-icon">❌</span>
+                    <span class="match-text">Passwords do not match</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="encryption_hint">Password Hint (Optional)</label>
+                <input type="text" id="encryption_hint" name="encryption_hint" placeholder="Enter a hint to help you remember this password">
+                <div class="hint-note">
+                    <span class="note-icon">ℹ️</span>
+                    <p>This hint will be visible when you try to decrypt the file. Do not include your actual password in the hint.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>Encrypt & Upload</button>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Loading Overlay for Encryption -->
+<div class="loading-overlay" id="encryptionLoading">
+    <div class="encryption-animation">
+        <div class="file"></div>
+        <div class="lock"></div>
+    </div>
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Encrypting and uploading your file...</div>
+    <div class="loading-progress">
+        <div class="loading-progress-bar" id="encryptionProgress"></div>
+    </div>
+    <div class="loading-details" id="encryptionDetails">Preparing file...</div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if is_drive_connected %}
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const loadingOverlay = document.getElementById('encryptionLoading');
+    const progressBar = document.getElementById('encryptionProgress');
+    const loadingDetails = document.getElementById('encryptionDetails');
+    
+    const passwordInput = document.getElementById('encryption_password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const strengthSegments = document.querySelectorAll('.strength-segment');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    // File selection
+    browseBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('drag-over');
+    });
+    
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('drag-over');
+    });
+    
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('drag-over');
+        
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        }
+    });
+    
+    // Remove file
+    removeFileBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        filePreview.style.display = 'none';
+        document.querySelector('.file-msg').style.display = 'block';
+        validateForm();
+    });
+    
+    // Password visibility toggle
+    togglePassword.addEventListener('click', () => {
+        togglePasswordVisibility(passwordInput, togglePassword);
+    });
+    
+    toggleConfirmPassword.addEventListener('click', () => {
+        togglePasswordVisibility(confirmPasswordInput, toggleConfirmPassword);
+    });
+    
+    // Password strength and match validation
+    passwordInput.addEventListener('input', () => {
+        checkPasswordStrength(passwordInput.value);
+        checkPasswordMatch();
+        validateForm();
+    });
+    
+    confirmPasswordInput.addEventListener('input', () => {
+        checkPasswordMatch();
+        validateForm();
+    });
+    
+    // Form submission with loading animation
+    uploadForm.addEventListener('submit', (e) => {
+        // Show loading overlay
+        loadingOverlay.classList.add('active');
+        
+        // Simulate progress for better UX
+        simulateProgress();
+        
+        // Let the form submit normally
+        return true;
+    });
+    
+    function simulateProgress() {
+        let progress = 0;
+        const steps = [
+            { progress: 10, message: "Preparing file for encryption..." },
+            { progress: 30, message: "Applying AES-256 encryption..." },
+            { progress: 50, message: "Generating secure metadata..." },
+            { progress: 70, message: "Uploading encrypted file to Google Drive..." },
+            { progress: 90, message: "Finalizing and verifying upload..." }
+        ];
+        
+        let currentStep = 0;
+        
+        const interval = setInterval(() => {
+            if (currentStep < steps.length) {
+                progress = steps[currentStep].progress;
+                loadingDetails.textContent = steps[currentStep].message;
+                progressBar.style.width = progress + '%';
+                currentStep++;
+            } else if (progress < 95) {
+                progress += 1;
+                progressBar.style.width = progress + '%';
+            }
+            
+            // Don't reach 100% as that would indicate completion
+            // The page will redirect when the actual process completes
+        }, 800);
+        
+        // Clear interval after 30 seconds as a fallback
+        setTimeout(() => {
+            clearInterval(interval);
+        }, 30000);
+    }
+    
+    function handleFileSelect() {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            filePreview.style.display = 'flex';
+            document.querySelector('.file-msg').style.display = 'none';
+            validateForm();
+        }
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    function togglePasswordVisibility(input, button) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.textContent = '🔒';
+        } else {
+            input.type = 'password';
+            button.textContent = '👁️';
+        }
+    }
+    
+    function checkPasswordStrength(password) {
+        // Reset all segments
+        strengthSegments.forEach(segment => {
+            segment.classList.remove('active');
+        });
+        
+        if (!password) {
+            strengthText.textContent = 'None';
+            return;
+        }
+        
+        // Calculate strength
+        let strength = 0;
+        
+        // Length check
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+        
+        // Complexity checks
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[a-z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        // Cap at 4
+        strength = Math.min(4, strength);
+        
+        // Update UI
+        for (let i = 0; i < strength; i++) {
+            strengthSegments[i].classList.add('active');
+        }
+        
+        // Update text
+        const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong'];
+        strengthText.textContent = strengthLabels[strength - 1] || 'None';
+        
+        // Update colors
+        const strengthClass = ['weak', 'fair', 'good', 'strong'][strength - 1];
+        passwordStrength.className = 'password-strength ' + (strengthClass || '');
+    }
+    
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (!confirmPassword) {
+            passwordMatch.querySelector('.match-icon').textContent = '';
+            passwordMatch.querySelector('.match-text').textContent = '';
+            return;
+        }
+        
+        if (password === confirmPassword) {
+            passwordMatch.querySelector('.match-icon').textContent = '✅';
+            passwordMatch.querySelector('.match-text').textContent = 'Passwords match';
+            passwordMatch.classList.add('match');
+            passwordMatch.classList.remove('no-match');
+        } else {
+            passwordMatch.querySelector('.match-icon').textContent = '❌';
+            passwordMatch.querySelector('.match-text').textContent = 'Passwords do not match';
+            passwordMatch.classList.add('no-match');
+            passwordMatch.classList.remove('match');
+        }
+    }
+    
+    function validateForm() {
+        const hasFile = fileInput.files.length > 0;
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const passwordsMatch = password === confirmPassword;
+        
+        uploadBtn.disabled = !(hasFile && password && confirmPassword && passwordsMatch);
+    }
+    {% endif %}
+});
+</script>
+{% endblock %}

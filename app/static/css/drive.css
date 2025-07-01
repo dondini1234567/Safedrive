@@ -1,0 +1,354 @@
+/* Google Drive Authentication Styles */
+
+.google-auth-box {
+  background-color: var(--light-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.google-logo {
+  margin-bottom: var(--spacing-lg);
+}
+
+.google-logo img {
+  width: 80px;
+  height: 80px;
+}
+
+.google-auth-box h3 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+}
+
+.google-auth-box p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.permissions-list {
+  margin: var(--spacing-xl) 0;
+  text-align: left;
+}
+
+.permission-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--lighter-bg);
+  border-radius: var(--radius-md);
+}
+
+.permission-icon {
+  font-size: 1.5rem;
+  margin-right: var(--spacing-md);
+}
+
+.permission-details h4 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.permission-details p {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.auth-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.auth-note {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.setup-steps {
+  counter-reset: step-counter;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.setup-steps li {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 3rem;
+  counter-increment: step-counter;
+}
+
+.setup-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-steps h5 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.setup-steps code {
+  background-color: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  font-size: 0.9rem;
+}
+
+.google-auth-container {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.google-auth-logo {
+  max-width: 150px;
+  margin-bottom: 2rem;
+}
+
+.google-auth-button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-auth-button:hover {
+  background-color: #3367d6;
+}
+
+/* Google Drive integration styles */
+
+.drive-files-container,
+.drive-storage-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.drive-info,
+.storage-info {
+  margin-bottom: 20px;
+}
+
+.files-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.th {
+  font-weight: bold;
+  color: #333;
+}
+
+.table-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+}
+
+.td {
+  display: flex;
+  align-items: center;
+}
+
+.file-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.file-info h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #e9ecef;
+}
+
+.action-btn span:first-child {
+  margin-right: 5px;
+}
+
+.view-btn:hover {
+  background-color: #4285f4;
+  border-color: #4285f4;
+  color: white;
+}
+
+.no-files {
+  padding: 30px;
+  text-align: center;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.no-files p {
+  margin: 0 0 15px 0;
+  color: #666;
+}
+
+.drive-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Storage page styles */
+.storage-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.storage-header {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.storage-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.storage-details {
+  padding: 20px;
+}
+
+.storage-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.storage-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.storage-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.storage-value {
+  color: #333;
+}
+
+.storage-progress {
+  padding: 0 20px 20px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4285f4;
+  border-radius: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .th.file-type,
+  .td.file-type,
+  .th.file-date,
+  .td.file-date {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .th.file-size,
+  .td.file-size {
+    display: none;
+  }
+
+  .drive-actions {
+    flex-direction: column;
+  }
+}

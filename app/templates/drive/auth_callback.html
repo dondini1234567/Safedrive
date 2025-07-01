@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Google Drive Connected{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3>Successfully Connected to Google Drive</h3>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='assets/google-drive-logo.png') }}" alt="Google Drive Logo" class="mb-4" style="max-width: 150px;">
+                    
+                    <div class="alert alert-success">
+                        <h4><i class="fas fa-check-circle"></i> Your Google Drive account is now connected to SafeDrive!</h4>
+                    </div>
+                    
+                    <p class="lead">You can now:</p>
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item">Upload encrypted files to your Google Drive</li>
+                        <li class="list-group-item">Download your encrypted files from Google Drive</li>
+                        <li class="list-group-item">Share encrypted files securely with other users</li>
+                    </ul>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                        <a href="{{ url_for('main.upload') }}" class="btn btn-success btn-lg ml-3">Upload a File</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
