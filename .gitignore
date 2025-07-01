@@ -14,7 +14,7 @@ instance/
 .env
 *.env
 client_secret.json
-
+credentials.json
 # SQLite database files
 *.db
 
@@ -24,3 +24,4 @@ client_secret.json
 # VSCode or IDE configs (optional)
 .vscode/
 .idea/
+app/credentials.json
