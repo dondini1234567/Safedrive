@@ -521,6 +521,20 @@ def shared_files():
         flash('An error occurred while loading shared files. Please try again later.', 'error')
         return redirect(url_for('main.dashboard'))
 
+@bp.route('/file-link/<int:file_id>')
+@login_required
+def get_file_link(file_id):
+    file = File.query.filter_by(id=file_id).first_or_404()
+    if file.user_id != current_user.id and not file.is_shared_with(current_user.id):
+        return jsonify({'error': 'Unauthorized'}), 403
+    try:
+        file_link = share_file_via_web_link(file.drive_file_id)
+        return jsonify({'download_link': file_link, 'message': 'Use this link to download and decrypt the file.'})
+    except Exception as e:
+        logger.error(f"Failed to create web view link: {e}")
+        return jsonify({'error': 'Failed to create view link'}), 500
+
+        
 @bp.route('/debug')
 @login_required
 def debug():

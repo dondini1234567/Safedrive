@@ -1,8 +1,6 @@
 from datetime import datetime
 from app import db
 from app.models.file_share import file_shares
-from app.drive.google_drive import share_file_with_user  # ✅ Move to top-level
-from app import logger  # ✅ Add this if logging is used in the model
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,16 +14,16 @@ class File(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    
     # Relationship for shared files
     shared_with = db.relationship('User', 
-                                  secondary=file_shares,
-                                  backref=db.backref('shared_files', lazy='dynamic'),
-                                  lazy='dynamic')
-
+                                 secondary=file_shares,
+                                 backref=db.backref('shared_files', lazy='dynamic'),
+                                 lazy='dynamic')
+    
     def __repr__(self):
         return f'<File {self.filename}>'
-
+    
     def to_dict(self):
         return {
             'id': self.id,
@@ -37,25 +35,20 @@ class File(db.Model):
             'updated_at': self.updated_at.isoformat(),
             'encryption_hint': self.encryption_hint
         }
-
+    
     def is_shared_with(self, user_id):
         """Check if file is shared with a specific user"""
         return self.shared_with.filter_by(id=user_id).first() is not None
-
+    
     def share_with(self, user_id, note=None):
-        """Share file with another user and give them Google Drive access"""
+        """Share file with another user"""
         from app.models.user import User
         user = User.query.get(user_id)
         if user and not self.is_shared_with(user_id):
             self.shared_with.append(user)
-            if self.drive_file_id and user.email:
-                try:
-                    share_file_with_user(self.drive_file_id, user.email)
-                except Exception as e:
-                    logger.error(f"Failed to share on Google Drive: {e}")
             return True
         return False
-
+    
     def unshare_with(self, user_id):
         """Unshare file with a user"""
         from app.models.user import User

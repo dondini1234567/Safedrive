@@ -422,6 +422,34 @@ def list_drive_files(folder_name="SafeDrive"):
         logger.error(f"Error listing files: {str(e)}")
         return []
 
+
+def share_file_via_web_link(file_id):
+    """Make a file publicly viewable via link."""
+    try:
+        permission = {
+            'type': 'anyone',
+            'role': 'reader',
+        }
+
+        drive_service = get_drive_service()
+        drive_service.permissions().create(
+            fileId=file_id,
+            body=permission,
+            fields='id',
+        ).execute()
+
+        file = drive_service.files().get(
+            fileId=file_id,
+            fields='webViewLink, webContentLink'
+        ).execute()
+
+        return file.get("webViewLink") or file.get("webContentLink")
+    
+    except Exception as e:
+        logger.error(f"Error sharing file via web link: {e}")
+        return None
+
+
 def share_file_with_user(file_id, recipient_email):
     """
     Share a file in Google Drive with another user's email address
