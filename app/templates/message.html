@@ -2,60 +2,57 @@
 {% block title %}Messages{% endblock %}
 
 {% block content %}
-<div class="chat-container" style="max-width: 700px; margin: auto; padding: 20px;">
-    <h3>📨 Encrypted Messages</h3>
+<div class="chat-container" style="max-width: 800px; margin: auto; padding: 20px;">
+    <h2 style="margin-bottom: 10px;">📨 Encrypted Chat</h2>
 
-    <!-- Current user info -->
-    <input type="hidden" id="current-id" value="{{ current_user.id }}">
     <input type="hidden" id="current-email" value="{{ current_user.email }}">
+    <input type="hidden" id="current-id" value="{{ current_user.id }}">
     <input type="hidden" id="current-username" value="{{ current_user.username }}">
 
-    <!-- User selector with reload on change -->
-    <form method="get" action="{{ url_for('main.messages') }}">
-        <div class="mb-3">
-            <label for="recipient" class="form-label">Send To:</label>
-            <select name="recipient_id" id="recipient" class="form-select" onchange="this.form.submit()">
-                <option disabled selected>Select a user</option>
-                {% for user in users %}
-                    {% if user.id != current_user.id %}
-                        <option value="{{ user.id }}" {% if user.id == selected_user_id %}selected{% endif %}>
-                            {{ user.email }}
-                        </option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-    </form>
+    <!-- Recipient selector -->
+    <div class="mb-3">
+        <label for="recipient">Send to:</label>
+        <select id="recipient" class="form-select">
+            {% for user in users %}
+                {% if user.id != current_user.id %}
+                    <option value="{{ user.id }}">{{ user.email }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
 
-    <!-- Chat history box -->
+    <!-- Message history -->
     <div id="messages" class="chat-box">
         {% for msg in history %}
             {% set is_sender = msg.sender_id == current_user.id %}
             <div class="message-bubble {{ 'sent' if is_sender else 'received' }}">
                 <div class="message-header">
                     <img src="/static/uploads/profile_images/user_{{ msg.sender_id }}.png" class="profile-img">
-                    <strong>{{ msg.sender.email.split('@')[0] }}</strong>
+                    <strong class="chat-username">{{ msg.sender.email.split('@')[0] }}</strong>
                     <small>({{ msg.sender.email }})</small>
                 </div>
                 <div class="message-body">
-                    {% if msg.is_file %}
-                        📎 <a href="{{ msg.file_data }}" download="{{ msg.filename }}">{{ msg.filename }}</a>
+                    {% if msg.__class__.__name__ == 'TextMessage' %}
+                        {{ msg.content }}
+                    {% elif msg.__class__.__name__ == 'FileMessage' %}
+                        📎 
+                        <a href="{{ url_for('static', filename=msg.filepath.split('static/')[-1]) }}" download="{{ msg.filename }}">
+                            {{ msg.filename }}
+                        </a>
                     {% else %}
-                        {{ msg.file_data }}
+                        ⚠️ Unknown message type
                     {% endif %}
                 </div>
             </div>
         {% endfor %}
     </div>
 
-    {% if selected_user_id %}
-    <!-- Message input box -->
+    <!-- Message input -->
     <div class="input-group mt-3">
         <input type="text" id="message" class="form-control" placeholder="Type your message...">
         <input type="file" id="fileInput" class="form-control">
         <button class="btn btn-primary" onclick="sendMessage()">Send</button>
     </div>
-    {% endif %}
 </div>
 {% endblock %}
 
@@ -92,59 +89,110 @@
                 sender_id: currentId,
                 username: currentUsername
             });
+
+            // Render locally
+            renderMessage({
+                msg: message,
+                sender_email: currentEmail,
+                sender_id: currentId,
+                username: currentUsername
+            }, true);
         }
 
         document.getElementById('message').value = '';
         fileInput.value = '';
     }
+
+    socket.on('private_message', function(data) {
+        const currentEmail = document.getElementById('current-email').value;
+        if (data.sender_email !== currentEmail) {
+            renderMessage(data, false);
+        }
+    });
+
+    socket.on('private_file', function(data) {
+        const isSender = data.sender_email === document.getElementById('current-email').value;
+        const container = document.createElement('div');
+        container.className = 'message-bubble ' + (isSender ? 'sent' : 'received');
+
+        container.innerHTML = `
+            <div class="message-header">
+                <img src="/static/uploads/profile_images/user_${isSender ? document.getElementById('current-id').value : data.sender_id}.png" class="profile-img">
+                <strong class="chat-username">${data.username || data.sender_email.split('@')[0]}</strong>
+                <small>(${data.sender_email})</small>
+            </div>
+            <div class="message-body">
+                📎 <a href="${data.file_data}" download="${data.file_name}">${data.file_name}</a>
+            </div>
+        `;
+
+        document.getElementById('messages').appendChild(container);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    });
+
+    function renderMessage(data, isSender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message-bubble ' + (isSender ? 'sent' : 'received');
+        msgDiv.innerHTML = `
+            <div class="message-header">
+                <img src="/static/uploads/profile_images/user_${isSender ? document.getElementById('current-id').value : data.sender_id}.png" class="profile-img">
+                <strong class="chat-username">${data.username || data.sender_email.split('@')[0]}</strong>
+                <small>(${data.sender_email})</small>
+            </div>
+            <div class="message-body">${data.msg}</div>
+        `;
+        document.getElementById('messages').appendChild(msgDiv);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
 </script>
 
 <style>
 .chat-box {
+    background: #fff;
     border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    background: #f9f9f9;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.message-bubble {
-    margin-bottom: 12px;
-    padding: 10px;
     border-radius: 8px;
+    padding: 5px;
+    max-height: 350px; /* Smaller fixed height */
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.message-bubble {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
     max-width: 75%;
-    color: black;
     clear: both;
 }
-
 .sent {
     background-color: #dcf8c6;
     float: right;
 }
-
 .received {
     background-color: #f1f0f0;
     float: left;
 }
-
 .message-header {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-bottom: 4px;
 }
-
-.message-body {
-    white-space: pre-wrap;
-    word-wrap: break-word;
+.chat-username {
+    font-weight: bold;
+    color: #4b0082;
 }
-
 .profile-img {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
+}
+.message-body {
+    color: #000;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 </style>
 {% endblock %}
