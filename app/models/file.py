@@ -41,11 +41,21 @@ class File(db.Model):
         return self.shared_with.filter_by(id=user_id).first() is not None
     
     def share_with(self, user_id, note=None):
-        """Share file with another user"""
+        """Share file with another user and give them Google Drive access"""
         from app.models.user import User
+         from app.drive.google_drive import share_file_with_user
+
         user = User.query.get(user_id)
         if user and not self.is_shared_with(user_id):
             self.shared_with.append(user)
+
+            if self.drive_file_id and user.email:
+                try:
+                    share_file_with_user(self.drive_file_id, user.email)
+                except Exception as e:
+                     from app import logger
+                     logger.error(f"Failed to share on Google Drive: {e}")
+
             return True
         return False
     
